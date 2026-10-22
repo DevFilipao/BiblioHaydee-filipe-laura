@@ -1,7 +1,5 @@
 package br.escola.bibliohaydee.model;
 
-import java.util.Scanner;
-
 public class Usuario {
     private String nome;
     private String matricula;
@@ -9,23 +7,31 @@ public class Usuario {
     private Integer limiteEmprestimos;
     private Integer emprestimosAtivos;
 
-    public Usuario(String nomeInformado, String matriculaInformada,
-                   String tipoInformado, Integer limiteInformado) {
-        if (!nomeValido(nomeInformado)) {
+    public Usuario(String nome, String matricula, String tipo, Integer limiteEmprestimos) {
+        if (!nomeValido(nome)) {
             throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
         }
-        if (!tipoValido(tipoInformado)) {
+        if (!matriculaValida(matricula)) {
+            throw new IllegalArgumentException("A matrícula não pode ser nula ou vazia.");
+        }
+        if (!tipoValido(tipo)) {
             throw new IllegalArgumentException("O tipo deve ser ALUNO ou PROFESSOR.");
         }
-        nome = nomeInformado.trim();
-        matricula = matriculaInformada;
-        tipo = tipoInformado.trim().toUpperCase();
-        limiteEmprestimos = limiteInformado;
-        emprestimosAtivos = 0;
+        if (!limiteValido(limiteEmprestimos)) {
+            throw new IllegalArgumentException("O limite de empréstimos deve ser maior que zero.");
+        }
+        this.nome = nome.trim();
+        this.matricula = matricula.trim();
+        this.tipo = tipo.trim().toUpperCase();
+        this.limiteEmprestimos = limiteEmprestimos;
+        this.emprestimosAtivos = 0;
     }
 
-
     public static boolean nomeValido(String valor) {
+        return valor != null && !valor.trim().isEmpty();
+    }
+
+    public static boolean matriculaValida(String valor) {
         return valor != null && !valor.trim().isEmpty();
     }
 
@@ -35,6 +41,10 @@ public class Usuario {
         }
         String t = valor.trim().toUpperCase();
         return t.equals("ALUNO") || t.equals("PROFESSOR");
+    }
+
+    public static boolean limiteValido(Integer valor) {
+        return valor != null && valor > 0;
     }
 
     public String getNome() { return nome; }
@@ -48,40 +58,12 @@ public class Usuario {
             throw new IllegalArgumentException("O nome não pode ser nulo ou vazio.");
         }
         nome = novoNome.trim();
-
-        String nome;
-        Scanner scanner = null;
-        do {
-            System.out.print("Nome: ");
-            nome = scanner.nextLine();
-            if (!Usuario.nomeValido(nome)) {
-                System.out.println("Nome inválido: informe um nome não vazio.");
-            }
-        } while (!Usuario.nomeValido(nome));
-
-        System.out.print("Matrícula: ");
-        String matricula = scanner.nextLine();
-
-        String tipo;
-        do {
-            System.out.print("Tipo (ALUNO ou PROFESSOR): ");
-            tipo = scanner.nextLine();
-            if (!Usuario.tipoValido(tipo)) {
-                System.out.println("Tipo inválido: digite ALUNO ou PROFESSOR.");
-            }
-        } while (!Usuario.tipoValido(tipo));
-
-        System.out.print("Limite de empréstimos: ");
-        Integer limite = Integer.parseInt(scanner.nextLine());
-
-        Usuario usuario = new Usuario(nome, matricula, tipo, limite);
-        Usuario.add(usuario); // use a mesma estrutura em memória que já existe no Main
-        System.out.println("Usuário cadastrado: " + usuario.getNome());
     }
 
-    private static void add(Usuario usuario) {
-
+    @Override
+    public String toString() {
+        return nome + " | Matrícula: " + matricula + " | " + tipo
+                + " | Limite: " + limiteEmprestimos
+                + " | Empréstimos ativos: " + emprestimosAtivos;
     }
 }
-
-
