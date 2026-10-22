@@ -1,213 +1,236 @@
 package br.escola.bibliohaydee.app;
 
+
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
 import br.escola.bibliohaydee.model.Usuario;
+
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
 public class Main {
+
+
     static List<Autor> autores = new ArrayList<>();
     static List<Livro> acervo = new ArrayList<>();
     static List<Usuario> usuarios = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
 
-    // ---------- leitura do teclado ----------
 
-    static String lerTexto(String pergunta) {
-        System.out.print(pergunta);
-        return scanner.nextLine();
-    }
-
-    static int lerInteiro(String pergunta) {
-        while (true) {
-            System.out.print(pergunta);
-            try {
-                return Integer.parseInt(scanner.nextLine().trim());
-            } catch (NumberFormatException e) {
-                System.out.println("Digite um número inteiro válido.");
-            }
-        }
-    }
-
-    // ---------- cadastros ----------
-
+    // Cadastro de autores
     static Autor cadastrarAutor(String nome, String nacionalidade, int ano) {
         if (nome == null || nome.trim().isEmpty()) {
             System.out.println("Nome do autor inválido. Cadastro cancelado.");
             return null;
         }
-        Autor a = new Autor();
-        a.setNome(nome.trim());
-        a.setNacionalidade(nacionalidade);
-        a.setAnoNascimento(ano);
-        autores.add(a);
-        return a;
+
+
+        Autor autor = new Autor();
+        autor.setNome(nome.trim());
+        autor.setNacionalidade(nacionalidade);
+        autor.setAnoNascimento(ano);
+
+
+        autores.add(autor);
+        return autor;
     }
 
-    static Livro cadastrarLivro(String titulo, String isbn, Autor autor, int ano, String genero) {
+
+    // Cadastro de livros
+    static Livro cadastrarLivro(String titulo, String isbn, Autor autor,
+                                int ano, String genero) {
         if (autor == null || !autores.contains(autor)) {
-            System.out.println("Autor não cadastrado. Cadastre ou selecione um autor antes.");
+            System.out.println(
+                    "Autor não cadastrado. Cadastre ou selecione um autor antes.");
             return null;
         }
-        if (titulo == null || titulo.trim().isEmpty()) {
-            System.out.println("Título inválido. Cadastro cancelado.");
-            return null;
-        }
-        Livro l = new Livro(titulo.trim(), isbn, autor, ano, genero);
-        acervo.add(l);
-        return l;
+
+
+        Livro livro = new Livro(titulo, isbn, autor, ano, genero);
+        acervo.add(livro);
+        return livro;
     }
 
-    static Usuario cadastrarUsuario(String nome, String matricula, String tipo, int limite) {
-        // A validação fica no Usuario; o Main só trata o erro e avisa o operador.
-        try {
-            Usuario u = new Usuario(nome, matricula, tipo, limite);
-            usuarios.add(u);
-            return u;
-        } catch (IllegalArgumentException e) {
-            System.out.println("Cadastro cancelado: " + e.getMessage());
-            return null;
-        }
-    }
 
-    // ---------- telas ----------
-
-    static void telaAutor() {
-        System.out.println("\n--- Novo autor ---");
-        String nome = lerTexto("Nome: ");
-        String nacionalidade = lerTexto("Nacionalidade: ");
-        int ano = lerInteiro("Ano de nascimento: ");
-        Autor a = cadastrarAutor(nome, nacionalidade, ano);
-        if (a != null) {
-            System.out.println("Autor cadastrado: " + a);
-        }
-    }
-
-    static void telaLivro() {
-        System.out.println("\n--- Novo livro ---");
-        if (autores.isEmpty()) {
-            System.out.println("Nenhum autor cadastrado. Cadastre um autor primeiro.");
-            return;
-        }
-        listarAutores();
-        int escolha = lerInteiro("Número do autor: ");
-        if (escolha < 1 || escolha > autores.size()) {
-            System.out.println("Autor inexistente. Cadastro cancelado.");
-            return;
-        }
-        Autor autor = autores.get(escolha - 1);
-
-        String titulo = lerTexto("Título: ");
-        String isbn = lerTexto("ISBN: ");
-        int ano = lerInteiro("Ano de publicação: ");
-        String genero = lerTexto("Gênero: ");
-
-        Livro l = cadastrarLivro(titulo, isbn, autor, ano, genero);
-        if (l != null) {
-            System.out.println("Livro cadastrado: " + l);
-        }
-    }
-
-    static void telaUsuario() {
-        System.out.println("\n--- Novo usuário ---");
-
-        String nome;
-        do {
-            nome = lerTexto("Nome: ");
-            if (!Usuario.nomeValido(nome)) {
-                System.out.println("Nome inválido: informe um nome não vazio.");
-            }
-        } while (!Usuario.nomeValido(nome));
-
-        String matricula;
-        do {
-            matricula = lerTexto("Matrícula: ");
-            if (!Usuario.matriculaValida(matricula)) {
-                System.out.println("Matrícula inválida: informe uma matrícula não vazia.");
-            }
-        } while (!Usuario.matriculaValida(matricula));
-
-        String tipo;
-        do {
-            tipo = lerTexto("Tipo (ALUNO ou PROFESSOR): ");
-            if (!Usuario.tipoValido(tipo)) {
-                System.out.println("Tipo inválido: digite ALUNO ou PROFESSOR.");
-            }
-        } while (!Usuario.tipoValido(tipo));
-
-        int limite;
-        do {
-            limite = lerInteiro("Limite de empréstimos: ");
-            if (!Usuario.limiteValido(limite)) {
-                System.out.println("Limite inválido: deve ser maior que zero.");
-            }
-        } while (!Usuario.limiteValido(limite));
-
-        Usuario u = cadastrarUsuario(nome, matricula, tipo, limite);
-        if (u != null) {
-            System.out.println("Usuário cadastrado: " + u.getNome());
-        }
-    }
-
-    // ---------- listagens ----------
-
-    static void listarAutores() {
-        if (autores.isEmpty()) {
-            System.out.println("Nenhum autor cadastrado.");
-            return;
-        }
-        for (int i = 0; i < autores.size(); i++) {
-            System.out.println((i + 1) + " - " + autores.get(i));
-        }
-    }
-
+    // Listagem do acervo
     static void listarAcervo() {
         if (acervo.isEmpty()) {
             System.out.println("O acervo está vazio.");
             return;
         }
-        for (Livro l : acervo) {
-            System.out.println(l);
+
+
+        for (Livro livro : acervo) {
+            System.out.println(livro);
         }
     }
 
-    static void listarUsuarios() {
-        if (usuarios.isEmpty()) {
-            System.out.println("Nenhum usuário cadastrado.");
-            return;
-        }
-        for (Usuario u : usuarios) {
-            System.out.println(u);
+
+    // Cadastro de usuários
+    static Usuario cadastrarUsuario(String nome, String matricula,
+                                    String tipo, Integer limite) {
+        try {
+            Usuario usuario = new Usuario(nome, matricula, tipo, limite);
+
+
+            usuarios.add(usuario);
+
+
+            System.out.println(
+                    "Usuário cadastrado: " + usuario.getNome());
+
+
+            return usuario;
+
+
+        } catch (IllegalArgumentException erro) {
+            System.out.println("Erro no cadastro: " + erro.getMessage());
+            return null;
         }
     }
 
-    // ---------- programa principal ----------
+
+    // Entrada de dados do usuário pelo console
+    static void cadastrarUsuarioConsole(Scanner scanner) {
+        String nome;
+
+
+        do {
+            System.out.print("Nome: ");
+            nome = scanner.nextLine();
+
+
+            if (!Usuario.nomeValido(nome)) {
+                System.out.println(
+                        "Nome inválido. Informe um nome não vazio.");
+            }
+        } while (!Usuario.nomeValido(nome));
+
+
+        System.out.print("Matrícula: ");
+        String matricula = scanner.nextLine();
+
+
+        String tipo;
+
+
+        do {
+            System.out.print("Tipo (ALUNO ou PROFESSOR): ");
+            tipo = scanner.nextLine();
+
+
+            if (!Usuario.tipoValido(tipo)) {
+                System.out.println(
+                        "Tipo inválido. Digite ALUNO ou PROFESSOR.");
+            }
+        } while (!Usuario.tipoValido(tipo));
+
+
+        int limite;
+
+
+        while (true) {
+            System.out.print("Limite de empréstimos: ");
+            String entrada = scanner.nextLine();
+
+
+            try {
+                limite = Integer.parseInt(entrada);
+
+
+                if (limite < 0) {
+                    System.out.println(
+                            "O limite não pode ser negativo.");
+                    continue;
+                }
+
+
+                break;
+
+
+            } catch (NumberFormatException erro) {
+                System.out.println(
+                        "Digite um número inteiro válido.");
+            }
+        }
+
+
+        cadastrarUsuario(nome, matricula, tipo, limite);
+    }
+
 
     public static void main(String[] args) {
-        int opcao;
-        do {
-            System.out.println("\n===== BIBLIOTECA =====");
-            System.out.println("1 - Cadastrar autor");
-            System.out.println("2 - Cadastrar livro");
-            System.out.println("3 - Cadastrar usuário");
-            System.out.println("4 - Listar autores");
-            System.out.println("5 - Listar acervo");
-            System.out.println("6 - Listar usuários");
-            System.out.println("0 - Sair");
-            opcao = lerInteiro("Escolha: ");
+        Scanner scanner = new Scanner(System.in);
 
-            switch (opcao) {
-                case 1: telaAutor(); break;
-                case 2: telaLivro(); break;
-                case 3: telaUsuario(); break;
-                case 4: listarAutores(); break;
-                case 5: listarAcervo(); break;
-                case 6: listarUsuarios(); break;
-                case 0: System.out.println("Até logo!"); break;
-                default: System.out.println("Opção inválida.");
-            }
-        } while (opcao != 0);
+
+        // Testes de autores e livros
+        listarAcervo();
+
+
+        cadastrarAutor("", "Brasileira", 1900);
+        cadastrarAutor("", "Brasileira", 1900);
+
+
+        Autor machado = cadastrarAutor(
+                "Machado de Assis", "Brasileira", 1839);
+
+
+        System.out.println(machado);
+
+
+        cadastrarLivro(
+                "Dom Casmurro", "978-85-0000-000-1",
+                null, 1899, "Romance");
+
+
+        Livro dom = cadastrarLivro(
+                "Dom Casmurro", "978-85-0000-000-1",
+                machado, 1899, "Romance");
+
+
+        if (dom != null) {
+            System.out.println("Disponível? " + dom.isDisponivel());
+        }
+
+
+        listarAcervo();
+
+
+        String resposta;
+
+
+        do {
+            System.out.println("\n=== CADASTRO DE USUÁRIO ===");
+            cadastrarUsuarioConsole(scanner);
+
+
+            System.out.print("\nDeseja cadastrar outro usuário? (sim/não): ");
+            resposta = scanner.nextLine();
+
+
+        } while (resposta.equalsIgnoreCase("sim"));
+
+
+        // Conferência dos usuários cadastrados
+        System.out.println("\n=== USUÁRIOS CADASTRADOS ===");
+
+
+        for (Usuario usuario : usuarios) {
+            System.out.println("Nome: " + usuario.getNome());
+            System.out.println("Matrícula: " + usuario.getMatricula());
+            System.out.println("Tipo: " + usuario.getTipo());
+            System.out.println(
+                    "Limite de empréstimos: "
+                            + usuario.getLimiteEmprestimos());
+            System.out.println(
+                    "Empréstimos ativos: "
+                            + usuario.getEmprestimosAtivos());
+        }
+
+
+        scanner.close();
     }
 }
+
