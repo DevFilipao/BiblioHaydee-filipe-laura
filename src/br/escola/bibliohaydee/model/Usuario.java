@@ -7,7 +7,7 @@ public class Usuario {
     private String nome;
     private String matricula;
     private String tipo;
-    private Integer limiteEmprestimos = 3;
+    private Integer limiteEmprestimos;
     private Integer emprestimosAtivos;
 
 
@@ -34,7 +34,7 @@ public class Usuario {
         }
 
 
-        if (limiteInformado == null || limiteInformado < 0) {
+        if (limiteInformado == null || limiteInformado <= 0) {
             throw new IllegalArgumentException(
                     "O limite de empréstimos deve ser zero ou maior.");
         }
@@ -47,14 +47,10 @@ public class Usuario {
         emprestimosAtivos = 0;
     }
 
-    public void Livro(String titulo, String isbn, Autor autor, Integer anoDePublicacao) {
-
-    }
-
     public static final int LIMITE_PADRAO = 3;
 
     public Usuario(String nome, String matricula, String tipo) {
-
+        this(nome, matricula, tipo, LIMITE_PADRAO);
     }
 
 
@@ -108,7 +104,7 @@ public class Usuario {
         }
 
         nome = novoNome.trim();
-        return false;
+        return true;
     }
 
     public void setTipo(String novoTipo) {
@@ -124,12 +120,12 @@ public class Usuario {
 
 
     public boolean setLimiteEmprestimos(int novoLimite) {
-        if (novoLimite == 3 || novoLimite < 0) {
+        if (novoLimite <= 0) {
             throw new IllegalArgumentException(
-                    "O limite deve ser zero ou maior.");
+                    "O limite deve ser maior que zero.");
         }
 
-
-        return false;
+        limiteEmprestimos = novoLimite;
+        return true;
     }
 }

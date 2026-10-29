@@ -1,10 +1,8 @@
 package br.escola.bibliohaydee.app;
 
-
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
 import br.escola.bibliohaydee.model.Usuario;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +35,15 @@ public class Main {
         return autor;
     }
 
+    static Usuario buscarUsuario(String matricula) {
+        for (Usuario usuario : usuarios) {
+            if (usuario.getMatricula().equalsIgnoreCase(matricula.trim())) {
+                return usuario;
+            }
+        }
+
+        return null;
+    }
 
     // Cadastro de livros
     static Livro cadastrarLivro(String titulo, String isbn, Autor autor,
@@ -47,6 +54,9 @@ public class Main {
             return null;
         }
 
+        if (genero == null || genero.trim().isEmpty()) {
+            genero = "Não informado";
+        }
 
         Livro livro = new Livro(titulo, isbn, autor, ano, genero);
         acervo.add(livro);
@@ -72,8 +82,21 @@ public class Main {
     static Usuario cadastrarUsuario(String nome, String matricula,
                                     String tipo, Integer limite) {
         try {
-            Usuario usuario = new Usuario(nome, matricula, tipo, limite);
+            Usuario usuario;
 
+            if (limite == null) {
+                usuario = new Usuario(nome, matricula, tipo);
+            } else {
+                usuario = new Usuario(nome, matricula, tipo, limite);
+            }
+
+            for (Usuario cadastrado : usuarios) {
+                if (cadastrado.getMatricula().equalsIgnoreCase(
+                        usuario.getMatricula())) {
+                    System.out.println("Esta matrícula já está cadastrada.");
+                    return null;
+                }
+            }
 
             usuarios.add(usuario);
 
@@ -139,7 +162,7 @@ public class Main {
             try {
                 limite = Integer.parseInt(entrada);
 
-                if (limite < 0 || limite > 8) {
+                if (limite < 0 || limite > 5) {
                     System.out.println(
                             "O limite deve estar entre 0 e 5."
                     );
@@ -155,6 +178,60 @@ public class Main {
 
 
         cadastrarUsuario(nome, matricula, tipo, limite);
+    }
+
+    static void atualizarNome(Scanner scanner) {
+        System.out.print("Matrícula do usuário: ");
+        String matricula = scanner.nextLine().trim();
+
+        Usuario usuario = buscarUsuario(matricula);
+
+        if (usuario == null) {
+            System.out.println("Usuário não localizado.");
+            return;
+        }
+
+        System.out.print("Novo nome: ");
+        String novoNome = scanner.nextLine();
+
+        try {
+            usuario.setNome(novoNome);
+            System.out.println("Nome atualizado com sucesso!");
+        } catch (IllegalArgumentException erro) {
+            System.out.println("Erro: " + erro.getMessage());
+        }
+    }
+
+    static void atualizarLimite(Scanner scanner) {
+        System.out.print("Matrícula do usuário: ");
+        String matricula = scanner.nextLine().trim();
+
+        Usuario usuario = buscarUsuario(matricula);
+
+        if (usuario == null) {
+            System.out.println("Usuário não localizado.");
+            return;
+        }
+
+        while (true) {
+            System.out.print("Novo limite de empréstimos: ");
+            String entrada = scanner.nextLine().trim();
+
+            try {
+                int limite = Integer.parseInt(entrada);
+                usuario.setLimiteEmprestimos(limite);
+
+                System.out.println("Limite atualizado com sucesso!");
+                break;
+
+            } catch (NumberFormatException erro) {
+                System.out.println("Digite um número válido.");
+            } catch (IllegalArgumentException erro) {
+                System.out.println("Erro: " + erro.getMessage());
+            }
+
+        }
+
     }
 
 
