@@ -47,6 +47,16 @@ public class Usuario {
         emprestimosAtivos = 0;
     }
 
+    public void Livro(String titulo, String isbn, Autor autor, Integer anoDePublicacao) {
+
+    }
+
+    public static final int LIMITE_PADRAO = 3;
+
+    public Usuario(String nome, String matricula, String tipo) {
+
+    }
+
 
     public static boolean nomeValido(String valor) {
         return valor != null && !valor.trim().isEmpty();
@@ -91,17 +101,15 @@ public class Usuario {
         return emprestimosAtivos;
     }
 
-
-    public void setNome(String novoNome) {
+    public boolean setNome(String novoNome) {
         if (!nomeValido(novoNome)) {
             throw new IllegalArgumentException(
                     "O nome não pode ser nulo ou vazio.");
         }
 
-
         nome = novoNome.trim();
+        return false;
     }
-
 
     public void setTipo(String novoTipo) {
         if (!tipoValido(novoTipo)) {
@@ -114,15 +122,16 @@ public class Usuario {
     }
 
 
-    public void setLimiteEmprestimos(Integer novoLimite) {
+
+    public boolean setLimiteEmprestimos(Integer novoLimite) {
         if (novoLimite == null || novoLimite < 0) {
             throw new IllegalArgumentException(
                     "O limite deve ser zero ou maior.");
         }
 
-
         limiteEmprestimos = novoLimite;
 
 
+        return false;
     }
 }

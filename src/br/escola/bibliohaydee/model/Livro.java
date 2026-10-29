@@ -17,6 +17,11 @@ public class Livro {
         this.disponivel = true;
     }
 
+    public Livro(String titulo, String isbn, Autor autor, Integer anoDePublicacao) {
+
+    }
+
+
     public Autor getAutor() { return autor; }
     public boolean isDisponivel() { return disponivel; }
 
