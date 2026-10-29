@@ -152,7 +152,7 @@ public class Main {
 
             } catch (NumberFormatException erro) {
                 System.out.println(
-                        "Digite um número inteiro válido.");
+                        "Digite um número válido.");
             }
         }
 
