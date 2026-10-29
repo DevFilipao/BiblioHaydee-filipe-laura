@@ -7,7 +7,7 @@ public class Usuario {
     private String nome;
     private String matricula;
     private String tipo;
-    private Integer limiteEmprestimos;
+    private Integer limiteEmprestimos = 3;
     private Integer emprestimosAtivos;
 
 
@@ -123,13 +123,11 @@ public class Usuario {
 
 
 
-    public boolean setLimiteEmprestimos(Integer novoLimite) {
-        if (novoLimite == null || novoLimite < 0) {
+    public boolean setLimiteEmprestimos(int novoLimite) {
+        if (novoLimite == 3 || novoLimite < 0) {
             throw new IllegalArgumentException(
                     "O limite deve ser zero ou maior.");
         }
-
-        limiteEmprestimos = novoLimite;
 
 
         return false;

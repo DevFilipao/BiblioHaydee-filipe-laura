@@ -139,20 +139,17 @@ public class Main {
             try {
                 limite = Integer.parseInt(entrada);
 
-
-                if (limite < 0) {
+                if (limite < 0 || limite > 8) {
                     System.out.println(
-                            "O limite não pode ser negativo.");
+                            "O limite deve estar entre 0 e 5."
+                    );
                     continue;
                 }
 
-
                 break;
 
-
             } catch (NumberFormatException erro) {
-                System.out.println(
-                        "Digite um número válido.");
+                System.out.println("Digite um número válido.");
             }
         }
 
@@ -165,42 +162,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
 
-        // Testes de autores e livros
-        listarAcervo();
-
-
-        cadastrarAutor("", "Brasileira", 1900);
-        cadastrarAutor("", "Brasileira", 1900);
-
-
-        Autor machado = cadastrarAutor(
-                "Machado de Assis", "Brasileira", 1839);
-
-
-        System.out.println(machado);
-
-
-        cadastrarLivro(
-                "Dom Casmurro", "978-85-0000-000-1",
-                null, 1899, "Romance");
-
-
-        Livro dom = cadastrarLivro(
-                "Dom Casmurro", "978-85-0000-000-1",
-                machado, 1899, "Romance");
-
-
-        if (dom != null) {
-            System.out.println("Disponível? " + dom.isDisponivel());
-        }
-
-
-        listarAcervo();
-
-
         String resposta;
-
-
         do {
             System.out.println("\n=== CADASTRO DE USUÁRIO ===");
             cadastrarUsuarioConsole(scanner);
@@ -228,7 +190,6 @@ public class Main {
                     "Empréstimos ativos: "
                             + usuario.getEmprestimosAtivos());
         }
-
 
         scanner.close();
     }
